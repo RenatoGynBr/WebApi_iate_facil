@@ -176,5 +176,37 @@ namespace WebApi_iate_facil.Controllers
         }
 
 
+
+        [HttpGet]
+        public JsonResult StoredProcDadosBoleto(int seqCarne)
+        {
+            try
+            {
+                //string query = @"EXEC SP_APP_DADOS_BOLETO 123";
+                string query = $"EXEC SP_APP_DADOS_BOLETO seqCarne";
+                DataTable table = new DataTable();
+                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
+
+                SqlDataReader myReader;
+                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
+                {
+                    myConn.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myConn.Close();
+                    }
+                }
+
+                return new JsonResult(table);
+            }
+            catch (System.Exception e)
+            {
+                throw new Exception("HttpGet StoredProcDadosBoleto error: " + e.Message);
+            }
+        }
+
     }
 }
