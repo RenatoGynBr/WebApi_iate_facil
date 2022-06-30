@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
@@ -6,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace WebApi_iate_facil.Controllers
 {
-    //[Route("api/[controller]")]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class FolhaPagamentoController : ControllerBase

@@ -6,7 +6,6 @@ using System.Data.SqlClient;
 
 namespace WebApi_iate_facil.Controllers
 {
-    //[Route("api/[controller]")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AcessoController : ControllerBase
