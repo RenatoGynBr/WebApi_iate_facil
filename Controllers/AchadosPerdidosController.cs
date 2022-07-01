@@ -18,6 +18,7 @@ namespace WebApi_iate_facil.Controllers
         {
             _config = config;
         }
+
         [HttpGet]
         public JsonResult GetDefinicaoAP()
         {
