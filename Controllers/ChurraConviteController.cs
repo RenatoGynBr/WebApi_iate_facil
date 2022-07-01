@@ -5,16 +5,15 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 
-
 namespace WebApi_iate_facil.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ConviteChurrasqueiraController : ControllerBase
+    public class ChurraConviteController : ControllerBase
     {
         private readonly IConfiguration _config;
-        public ConviteChurrasqueiraController(IConfiguration config)
+        public ChurraConviteController(IConfiguration config)
         {
             _config = config;
         }
