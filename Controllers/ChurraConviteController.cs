@@ -82,13 +82,13 @@ namespace WebApi_iate_facil.Controllers
 
         [HttpPost]
         public JsonResult StoredProcIncluiConviteChurrasqueira(string usuario, string nomeConvidado, string cpfConvidado,
-            string dataNascimento, string nrDocEstrangeiro, string categoriaConvite, string ip)
+            string dataNascimento, string docEstrangeiro, string categoriaConvite, string ip)
         {
             try
             {
                 //string query = @"EXEC SP_APP_INCLUI_CONV_CHURRASQUEIRA '01000100','abcdefghij'";
                 string query = $"EXEC SP_APP_INCLUI_CONV_CHURRASQUEIRA '{usuario}','{nomeConvidado}','{cpfConvidado}'," +
-                    $"'{dataNascimento}', '{nrDocEstrangeiro}', '{categoriaConvite}', '{ip}'";
+                    $"'{dataNascimento}', '{docEstrangeiro}', '{categoriaConvite}', '{ip}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
