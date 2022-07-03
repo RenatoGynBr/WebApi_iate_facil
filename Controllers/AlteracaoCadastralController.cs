@@ -85,19 +85,27 @@ namespace WebApi_iate_facil.Controllers
         }
 
         /*
-        SP_APP_ALTERA_DADOS_TÍTULO
+        SP_APP_ALTERA_DADOS_TITULO
         	Parâmetros obrigatórios:
         		@CD_MATRICULA
 		        @CD_CATEGORIA
         		@USER_ACESSO_SISTEMA
          */
         [HttpPut]
-        public JsonResult StoredProcAlteraDadosTitulo(string matricula, string categoriaConvite, string usuario)
+        public JsonResult StoredProcAlteraDadosTitulo(string matricula, string categoria,
+            string email, string endCorrespondencia, string endCarne,
+            string endereco_r, string bairro_r, string cidade_r, string uf_r, string cep_r, string telefone_r,
+            string endereco_c, string bairro_c, string cidade_c, string uf_c, string cep_c, string telefone_c,
+            string usuario)
         {
             try
             {
-                //string query = @"EXEC SP_APP_ALTERA_DADOS_TÍTULO '1234','12','01000100'";
-                string query = $"EXEC SP_APP_ALTERA_DADOS_TÍTULO '{matricula}','{categoriaConvite}','{usuario}'";
+                //string query = @"EXEC SP_APP_ALTERA_DADOS_TITULO '1234','12','01000100'";
+                string query = ($"EXEC SP_APP_ALTERA_DADOS_TITULO '{matricula}','{categoria}'," +
+                    $"'{email}','{endCorrespondencia}','{endCarne}'," +
+                    $"'{endereco_r}','{bairro_r}','{cidade_r}','{uf_r}','{cep_r}','{telefone_r}'," +
+                    $"'{endereco_c}','{bairro_c}','{cidade_c}','{uf_c}','{cep_c}','{telefone_c}'," +
+                    $"'{usuario}'").Replace("''", "null");
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -133,12 +141,14 @@ namespace WebApi_iate_facil.Controllers
 
          */
         [HttpPut]
-        public JsonResult StoredProcAlteraDadosDependente(string matricula, string categoriaConvite, string dependente, string usuario)
+        public JsonResult StoredProcAlteraDadosDependente(string matricula, string categoria, string dependente,  
+            string email, string telefone_r, string telefone_c, string telefone_l, string usuario)
         {
             try
             {
                 //string query = @"EXEC SP_APP_ALTERA_DADOS_DEPENDENTE '1234','12','01000100'";
-                string query = $"EXEC SP_APP_ALTERA_DADOS_DEPENDENTE '{matricula}','{categoriaConvite}','{dependente}','{usuario}'";
+                string query = ($"EXEC SP_APP_ALTERA_DADOS_DEPENDENTE '{matricula}','{categoria}','{dependente}'," +
+                    $"'{email}','{telefone_r}','{telefone_c}','{telefone_l}','{usuario}'").Replace("''", "null");
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 

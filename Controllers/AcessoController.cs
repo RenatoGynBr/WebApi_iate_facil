@@ -21,7 +21,7 @@ namespace WebApi_iate_facil.Controllers
         {
             try
             {
-                //string query = @"EXEC SP_APP_VALIDA_LOGIN '01000100'.'senha'";
+                //string query = @"EXEC SP_APP_VALIDA_LOGIN '01000100','senha'";
                 string query = $"EXEC SP_APP_VALIDA_LOGIN '{usuario}','{senha}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
