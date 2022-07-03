@@ -111,12 +111,20 @@ namespace WebApi_iate_facil.Controllers
         }
 
 
+        /*
+         EXEC SP_APP_AGENDA_ACADEMIA_MES
+        	Parâmetros obrigatórios:
+		        @MES	
+        		@ANO	
+		        @NU_SEQ_SERVICO	
+         */
         [HttpGet]
         public JsonResult StoredProcAgendaAcademiaMes(int mes, int ano, int seqServico, int? funcionario, string turno)
         {
             try
             {
-                string query = $"exec SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {seqServico}, {funcionario}, '{turno}'";
+                string query = ($"exec SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {seqServico}, {funcionario}, '{turno}'")
+                    .Replace("''", "null").Replace(",,", ",null,"); // Replace strings e numéricos
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
