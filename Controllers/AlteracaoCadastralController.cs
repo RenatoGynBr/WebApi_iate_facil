@@ -19,16 +19,12 @@ namespace WebApi_iate_facil.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetDadosDependentes(string busca, int pagina = 1, int tamanhoPagina = 10)
+        public JsonResult GetDadosDependentes(int pagina = 1, int tamanhoPagina = 10)
         {
             try
             {
-                //string query = $"select top({pageSize}) * from VW_APP_DADOS_DEPENDENTES";
-                //if (string.IsNullOrEmpty(search))
-                //{
-                //}////
                 int offSet = (pagina - 1) * tamanhoPagina;
-                string query = $"select * from VW_APP_DADOS_DEPENDENTES order by 1 offset {offSet} rows fetch next {tamanhoPagina} rows only ";
+                string query = $"select * from VW_APP_DADOS_DEPENDENTES order by 1 offset {offSet} rows fetch next {tamanhoPagina} rows only";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -54,12 +50,13 @@ namespace WebApi_iate_facil.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetDadosTitular(string busca, int pagina = 1, int tamanhoPagina = 10)
+        public JsonResult GetDadosTitular(string matricula, int pagina = 1, int tamanhoPagina = 10)
         {
             try
             {
+                string whereClause = string.IsNullOrEmpty(matricula) ? "" : $" where CD_MATRICULA = {matricula} ";
                 int offSet = (pagina - 1) * tamanhoPagina;
-                string query = $"select * from VW_APP_DADOS_TITULAR order by 1 offset {offSet} rows fetch next {tamanhoPagina} rows only ";
+                string query = $"select * from VW_APP_DADOS_TITULAR {whereClause} order by 1 offset {offSet} rows fetch next {tamanhoPagina} rows only";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
