@@ -123,8 +123,8 @@ namespace WebApi_iate_facil.Controllers
         {
             try
             {
-                string query = ($"exec SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {seqServico}, {funcionario}, '{turno}'")
-                    .Replace("''", "null").Replace(",,", ",null,"); // Replace strings e numéricos
+                string query = ($"exec SP_APP_AGENDA_ACADEMIA_MES '{mes}', '{ano}', '{seqServico}', '{funcionario}', '{turno}'")
+                    .Replace("''", "null"); // Replace strings
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 

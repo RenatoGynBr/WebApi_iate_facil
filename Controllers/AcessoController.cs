@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using WebApi_iate_facil.Models;
 
 namespace WebApi_iate_facil.Controllers
 {
@@ -16,13 +17,15 @@ namespace WebApi_iate_facil.Controllers
             _config = config;
         }
 
-        [HttpGet]
-        public JsonResult StoredProcValidaLogin(string usuario, string senha)
+        [HttpPost]
+        public JsonResult StoredProcValidaLogin(EntityLogin entityLogin)
         {
             try
             {
-                //string query = @"EXEC SP_APP_VALIDA_LOGIN '01000100','senha'";
-                string query = $"EXEC SP_APP_VALIDA_LOGIN '{usuario}','{senha}'";
+                //EXEC SP_APP_VALIDA_LOGIN 'Renato','Renato';
+                //EXEC SP_APP_VALIDA_LOGIN '01136300','FM0222';
+                //string query = @"EXEC SP_APP_VALIDA_LOGIN '01000100','1234'";
+                string query = $"EXEC SP_APP_VALIDA_LOGIN '{entityLogin.Usuario}','{entityLogin.Senha}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -48,12 +51,12 @@ namespace WebApi_iate_facil.Controllers
         }
 
         [HttpPut]
-        public JsonResult StoredProcAlteraSenha(string usuario, string senhaAtual, string senhaNova)
+        public JsonResult StoredProcAlteraSenha(EntityLoginUpdate entityLoginUpdate)
         {
             try
             {
                 //string query = @"EXEC SP_APP_ALTERA_SENHA '01000100'.'senhaAtual','senhaNova'";
-                string query = $"EXEC SP_APP_ALTERA_SENHA '{usuario}','{senhaAtual}','{senhaNova}'";
+                string query = $"EXEC SP_APP_ALTERA_SENHA '{entityLoginUpdate.Usuario}','{entityLoginUpdate.SenhaAtual}','{entityLoginUpdate.SenhaNova}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 

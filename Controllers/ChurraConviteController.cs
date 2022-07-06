@@ -108,9 +108,9 @@ namespace WebApi_iate_facil.Controllers
             try
             {
                 //string query = @"EXEC SP_APP_INCLUI_CONV_CHURRASQUEIRA '01000100','abcdefghij'";
-                string query = ($"EXEC SP_APP_INCLUI_CONV_CHURRASQUEIRA {reserva},'{usuario}','{nomeConvidado}','{cpfConvidado}'," +
+                string query = ($"EXEC SP_APP_INCLUI_CONV_CHURRASQUEIRA '{reserva}','{usuario}','{nomeConvidado}','{cpfConvidado}'," +
                     $"'{dataNascimento}', '{docEstrangeiro}', '{ip}'")
-                    .Replace("''", "null").Replace(",,", ",null,"); // Replace strings e numéricos
+                    .Replace("''", "null"); // Replace strings e numéricos
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 

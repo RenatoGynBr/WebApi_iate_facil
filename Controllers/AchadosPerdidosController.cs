@@ -81,13 +81,13 @@ namespace WebApi_iate_facil.Controllers
 
 
         [HttpPost]
-        public JsonResult StoredProcObjetosAP(int setor, int definicao, string objeto)
+        public JsonResult StoredProcObjetosAP(int? setor, string definicao, string objeto)
         {
             try
             {
-                //string query = @"EXEC SP_APP_OBJETOS_AP NULL,NULL,NULL";
-                ////if (string.IsNullOrEmpty(objeto))
-                string query = $"EXEC SP_APP_OBJETOS_AP {setor},{definicao},{objeto}";
+                string query = ($"EXEC SP_APP_OBJETOS_AP '{setor}','{definicao}','{objeto}'")
+                               .Replace("''", "null"); // Replace strings 
+
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
