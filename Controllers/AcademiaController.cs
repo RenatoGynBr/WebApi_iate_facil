@@ -10,7 +10,7 @@ namespace WebApi_iate_facil.Controllers
 {
 	[Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AcademiaController : ControllerBase
     {
         private readonly IConfiguration _config;

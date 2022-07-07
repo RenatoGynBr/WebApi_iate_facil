@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 namespace WebApi_iate_facil.Controllers
 {
-    [Authorize]
+    //[Authorize]
     //[Route("api/[controller]")]
     [Route("api/[controller]/[action]")] 
     [ApiController]
