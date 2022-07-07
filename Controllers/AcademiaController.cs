@@ -8,9 +8,9 @@ using System.Data.SqlClient;
 
 namespace WebApi_iate_facil.Controllers
 {
-	[Authorize]
 	[Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class AcademiaController : ControllerBase
     {
         private readonly IConfiguration _config;

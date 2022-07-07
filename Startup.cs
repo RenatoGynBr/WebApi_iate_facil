@@ -1,13 +1,16 @@
-using Microsoft.AspNetCore.Authentication;
+//using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using WebApi_iate_facil.Authentication.API;
-using WebApi_iate_facil.Authentication.Services;
+using System.Text;
+//using WebApi_iate_facil.Authentication.API;
+//using WebApi_iate_facil.Authentication.Services;
 
 namespace WebApi_iate_facil
 {
@@ -24,50 +27,115 @@ namespace WebApi_iate_facil
         public void ConfigureServices(IServiceCollection services)
         {
             // Enable CORS
-            services.AddCors(c =>
-            {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+            //services.AddCors(c =>
+            //{
+            //    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            //});
+
             // JSON Serializer
             services.AddControllersWithViews().AddNewtonsoftJson(opt =>
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
                 .AddNewtonsoftJson(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
-            services.AddControllers();
+            //services.AddControllers();
 
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_iate_facil", Version = "v1" });
-            //});
+            // JWT BEARER TOKEN
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("EnableCORS", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
+
+            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_iate_facil", Version = "v1" });
-                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_TokenAuth", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "basic",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Autorização Básica usando o Bearer scheme."
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                           new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "basic"
-                                }
-                            },
-                            new string[] {}
+                          {
+                              Reference = new OpenApiReference
+                              {
+                                  Type = ReferenceType.SecurityScheme,
+                                  Id = "Bearer"
+                              }
+                          },
+                         new string[] {}
                     }
                 });
+
             });
-            services.AddAuthentication("BasicAuthentication")
-                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-            services.AddScoped<IUserService, UserService>();
+
+            // SEM Authorize
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_iate_facil", Version = "v1" });
+            //});
+
+            // COM Authorize
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_iate_facil", Version = "v1" });
+            //    c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+            //    {
+            //        Name = "Authorization",
+            //        Type = SecuritySchemeType.Http,
+            //        Scheme = "basic",
+            //        In = ParameterLocation.Header,
+            //        Description = "Autorização Básica usando o Bearer scheme."
+            //    });
+            //    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            //    {
+            //        {
+            //              new OpenApiSecurityScheme
+            //                {
+            //                    Reference = new OpenApiReference
+            //                    {
+            //                        Type = ReferenceType.SecurityScheme,
+            //                        Id = "basic"
+            //                    }
+            //                },
+            //                new string[] {}
+            //        }
+            //    });
+            //});
+            //services.AddAuthentication("BasicAuthentication")
+            //    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            //services.AddScoped<IUserService, UserService>();
 
         }
 
@@ -88,7 +156,7 @@ namespace WebApi_iate_facil
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseAuthentication();            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
