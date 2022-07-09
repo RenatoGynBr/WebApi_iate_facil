@@ -85,7 +85,10 @@ namespace WebApi_iate_facil.Controllers
         {
             try
             {
-                string query = ($"EXEC SP_APP_OBJETOS_AP '{setor}','{definicao}','{objeto}'")
+                // IF string objeto NOT NULL incluir % nos extremos
+                string paramObjeto = string.IsNullOrEmpty(objeto) ? "" : $"%{objeto}%";
+
+                string query = ($"EXEC SP_APP_OBJETOS_AP '{setor}','{definicao}','{paramObjeto}'")
                                .Replace("''", "null"); // Replace strings 
 
                 DataTable table = new DataTable();
