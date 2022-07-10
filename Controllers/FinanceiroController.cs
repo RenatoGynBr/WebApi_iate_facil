@@ -184,7 +184,7 @@ namespace WebApi_iate_facil.Controllers
             try
             {
                 //string query = @"EXEC SP_APP_DADOS_BOLETO 123";
-                string query = $"EXEC SP_APP_DADOS_BOLETO seqCarne";
+                string query = $"EXEC SP_APP_DADOS_BOLETO {seqCarne}";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
