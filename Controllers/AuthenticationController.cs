@@ -10,6 +10,7 @@ using WebApi_iate_facil.Models;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 
 namespace WebApi_iate_facil.Controllers
 {
@@ -58,14 +59,13 @@ namespace WebApi_iate_facil.Controllers
         //}
 
 
-        [HttpPost]
-        public JsonResult ValidaLogin([FromBody] EntityLogin entityLogin)
+        [HttpPost, Route("ValidaLogin")]
+        public IActionResult  /*JsonResult*/ ValidaLogin([FromBody] EntityLogin entityLogin)
         {
             try
             {
                 //EXEC SP_APP_VALIDA_LOGIN 'Renato','Renato';
                 //EXEC SP_APP_VALIDA_LOGIN '01136300','FM0222';
-                //string query = @"EXEC SP_APP_VALIDA_LOGIN '01000100','1234'";
                 string query = $"EXEC SP_APP_VALIDA_LOGIN '{entityLogin.Usuario}','{entityLogin.Senha}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
@@ -85,7 +85,7 @@ namespace WebApi_iate_facil.Controllers
 
                 if (table == null)
                 {
-                    return new JsonResult(new { Mensagem = "ERRO: HttpPost ValidaLogin" });
+                    return Unauthorized(new { Mensagem = $"ERRO:  HttpPost ValidaLogin" });
                 }
 
                 // Convert a DataTable to a string in C#
@@ -94,19 +94,17 @@ namespace WebApi_iate_facil.Controllers
 
                 if (res.Contains("Usuário ou senha inválido!"))
                 {
-                    return new JsonResult(new { Mensagem = "ERRO: Usuário ou senha inválido" });
+                    return Unauthorized(new { Mensagem = $"ERRO: Usuário ou senha inválido" });
                 }
                 else
                 {
                     var tokenString = GetToken();
-                    //return Ok(new { Token = tokenString });
-                    //return new JsonResult(table);
-                    return new JsonResult(new { Mensagem = "OK", Token = tokenString, Table = table });
+                    return Ok(new { Mensagem = "OK", Token = tokenString, Table = table });
                 }
             }
             catch (System.Exception e)
             {
-                throw new Exception("HttpPost ValidaLogin error: " + e.Message);
+                return Unauthorized("HttpPost ValidaLogin error: " + e.Message);
             }
         }
 
