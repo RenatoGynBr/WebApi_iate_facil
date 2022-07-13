@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using WebApi_iate_facil.Models;
 
 namespace WebApi_iate_facil.Controllers
 {
@@ -177,12 +178,12 @@ namespace WebApi_iate_facil.Controllers
 
 
         [HttpPut]
-        public JsonResult StoredProcCancelaConvite(int numeroConvite, string usuario, string ip)
+        public JsonResult StoredProcCancelaConvite(EntityCancelaConvite entity)
         {
             try
             {
                 //string query = @"EXEC SP_APP_CANCELA_CONVITE 1234,'01000100','abcdefghij'";
-                string query = $"EXEC SP_APP_CANCELA_CONVITE {numeroConvite},'{usuario}','{ip}'";
+                string query = $"EXEC SP_APP_CANCELA_CONVITE {entity.NumeroConvite},'{entity.Usuario}','{entity.IP}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -209,14 +210,13 @@ namespace WebApi_iate_facil.Controllers
 
 
         [HttpPost]
-        public JsonResult StoredProcIncluiConvite(string usuario, string nomeConvidado, string cpfConvidado, 
-            string dataNascimento, string nrDocEstrangeiro, string categoriaConvite, string ip)
+        public JsonResult StoredProcIncluiConvite(EntityIncluiConvite entity)
         {
             try
             {
                 //string query = @"EXEC SP_APP_INCLUI_CONVITE '01000100','abcdefghij'";
-                string query = $"EXEC SP_APP_INCLUI_CONVITE '{usuario}','{nomeConvidado}','{cpfConvidado}'," +
-                    $"'{dataNascimento}', '{nrDocEstrangeiro}', '{categoriaConvite}', '{ip}'";
+                string query = $"EXEC SP_APP_INCLUI_CONVITE '{entity.Usuario}','{entity.NomeConvidado}','{entity.CpfConvidado}'," +
+                    $"'{entity.DataNascimento}', '{entity.NrDocEstrangeiro}', '{entity.CategoriaConvite}', '{entity.IP}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
