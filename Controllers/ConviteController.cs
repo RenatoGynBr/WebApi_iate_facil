@@ -8,7 +8,7 @@ using WebApi_iate_facil.Models;
 
 namespace WebApi_iate_facil.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ConviteController : ControllerBase
@@ -176,9 +176,39 @@ namespace WebApi_iate_facil.Controllers
         }
 
 
+        [HttpPut]
+        public JsonResult StoredProcCancelaConvite(int numeroConvite, string usuario, string ip)
+        {
+            try
+            {
+                //string query = @"EXEC SP_APP_CANCELA_CONVITE 1234,'01000100','abcdefghij'";
+                string query = $"EXEC SP_APP_CANCELA_CONVITE {numeroConvite},'{usuario}','{ip}'";
+                DataTable table = new DataTable();
+                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
+
+                SqlDataReader myReader;
+                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
+                {
+                    myConn.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myConn.Close();
+                    }
+                }
+
+                return new JsonResult(table);
+            }
+            catch (System.Exception e)
+            {
+                throw new Exception("HttpGet StoredProcCancelaConvite error: " + e.Message);
+            }
+        }
 
         [HttpPut]
-        public JsonResult StoredProcCancelaConvite(EntityCancelaConvite entity)
+        public JsonResult StoredProcCancelaConvite2(EntityCancelaConvite entity)
         {
             try
             {
@@ -208,9 +238,41 @@ namespace WebApi_iate_facil.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult StoredProcIncluiConvite(string usuario, string nomeConvidado, string cpfConvidado,
+                    string dataNascimento, string nrDocEstrangeiro, string categoriaConvite, string ip)
+        {
+            try
+            {
+                //string query = @"EXEC SP_APP_INCLUI_CONVITE '01000100','abcdefghij'";
+                string query = $"EXEC SP_APP_INCLUI_CONVITE '{usuario}','{nomeConvidado}','{cpfConvidado}'," +
+                    $"'{dataNascimento}', '{nrDocEstrangeiro}', '{categoriaConvite}', '{ip}'";
+                DataTable table = new DataTable();
+                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
+
+                SqlDataReader myReader;
+                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
+                {
+                    myConn.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myConn.Close();
+                    }
+                }
+
+                return new JsonResult(table);
+            }
+            catch (System.Exception e)
+            {
+                throw new Exception("HttpGet StoredProcIncluiConvite error: " + e.Message);
+            }
+        }
 
         [HttpPost]
-        public JsonResult StoredProcIncluiConvite(EntityIncluiConvite entity)
+        public JsonResult StoredProcIncluiConvite2(EntityIncluiConvite entity)
         {
             try
             {
