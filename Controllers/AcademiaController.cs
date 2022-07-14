@@ -281,6 +281,37 @@ namespace WebApi_iate_facil.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult StoredProcFuncionarioAcademia(int agrupamento)
+        {
+            try
+            {
+                //string query = @"EXEC SP_APP_FUNCIONARIO_ACADEMIA 123";
+                string query = $"EXEC SP_APP_FUNCIONARIO_ACADEMIA {agrupamento}";
+                DataTable table = new DataTable();
+                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
+
+                SqlDataReader myReader;
+                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
+                {
+                    myConn.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myConn.Close();
+                    }
+                }
+
+                return new JsonResult(table);
+            }
+            catch (System.Exception e)
+            {
+                throw new Exception("HttpGet StoredProcFuncionarioAcademia error: " + e.Message);
+            }
+        }
+
         [HttpPut]
         public JsonResult StoredProcCancelaAgendaServAcademia(int seqAgendamento, string usuarioCancelamento, string ip)
         {
