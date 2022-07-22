@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-
+using WebApi_iate_facil.Models;
 
 namespace WebApi_iate_facil.Controllers
 {
@@ -85,7 +85,7 @@ namespace WebApi_iate_facil.Controllers
         {
             try
             {
-                //SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_DIA '22-07-2022','94','7003','D';
+                //string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_DIA '22-07-2022','94','7003','D'";
                 string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_DIA '{dataReferencia}', {seqServico}, {funcionario}, '{turno}'";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
@@ -116,9 +116,20 @@ namespace WebApi_iate_facil.Controllers
         {
             try
             {
-                //SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_MES '07','2022','94','7003','D';
+                //string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_MES '07','2022','94','7003','D'";
                 string query = ($"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {seqServico}, '{funcionario}', '{turno}'")
                     .Replace("''", "null"); // Replace strings
+                /*
+                   SqlCommand cmd = new SqlCommand("selecionaContatosPorIdade", conexao);
+                   cmd.CommandType = CommandType.StoredProcedure;
+                   cmd.Parameters.AddWithValue("@idade", Convert.ToInt32(txtIdade.Text));
+
+                   SqlDataAdapter da = new SqlDataAdapter(cmd);
+                   da.Fill(ds);
+                   lblmsg.Text = "Contatos com idade superior a " + Convert.ToInt32(txtIdade.Text);
+                   GridView1.DataSource = ds;
+                   GridView1.DataBind();
+                 */
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -241,40 +252,6 @@ namespace WebApi_iate_facil.Controllers
         }
 
 
-
-        [HttpGet]
-        public JsonResult StoredProcAgendaServicoAcademia(int matricula, int categoria, int dependente, 
-            string dataInicio, string dataFim, int seqServico, int funcionario, int seqAgenda, int seqExcecao, string usuario)
-        {
-            try
-            {
-                //string query = @"exec SP_APP_AGENDA_SERVICO_ACADEMIA 123,123,123, '2022-7-1','2022-7-31', 12,123,12,12,'01000900';";
-                string query = $"EXEC SP_APP_AGENDA_SERVICO_ACADEMIA {matricula}, {categoria}, {dependente}, " +
-                    $"'{dataInicio}', '{dataFim}', {seqServico}, {funcionario}, {seqAgenda}, {seqExcecao}, '{usuario}'";
-                DataTable table = new DataTable();
-                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
-
-                SqlDataReader myReader;
-                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
-                {
-                    myConn.Open();
-                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
-                    {
-                        myReader = myCommand.ExecuteReader();
-                        table.Load(myReader);
-                        myReader.Close();
-                        myConn.Close();
-                    }
-                }
-
-                return new JsonResult(table);
-            }
-            catch (System.Exception e)
-            {
-                throw new Exception("HttpGet StoredProcAgendaServicoAcademia error: " + e.Message);
-            }
-        }
-
         [HttpGet]
         public JsonResult StoredProcFuncionarioAcademia(int agrupamento)
         {
@@ -303,6 +280,43 @@ namespace WebApi_iate_facil.Controllers
             catch (System.Exception e)
             {
                 throw new Exception("HttpGet StoredProcFuncionarioAcademia error: " + e.Message);
+            }
+        }
+
+
+        [HttpPost]
+        
+        public JsonResult StoredProcAgendaServicoAcademia(EntityAgendaServicoAcademia entity)
+        //public JsonResult StoredProcAgendaServicoAcademia(int matricula, int categoria, int dependente, 
+        //    string dataInicio, string dataFim, int seqServico, int funcionario, int seqAgenda, int seqExcecao, string usuario)
+        {
+            try
+            {
+                //string query = @"exec SP_APP_AGENDA_SERVICO_ACADEMIA 123,123,123, '2022-7-1','2022-7-31', 12,123,12,12,'01000900';";
+                string query = $"EXEC SP_APP_AGENDA_SERVICO_ACADEMIA {entity.Matricula}, {entity.Categoria}, {entity.Dependente}, " +
+                    $"'{entity.DataInicio}', '{entity.DataFim}', {entity.Servico}, {entity.Funcionario}, {entity.Agenda}, " +
+                    $"{entity.Excecao}, '{entity.Usuario}'";
+                DataTable table = new DataTable();
+                string sqlDataSource = _config.GetConnectionString("DefaultConnection");
+
+                SqlDataReader myReader;
+                using (SqlConnection myConn = new SqlConnection(sqlDataSource))
+                {
+                    myConn.Open();
+                    using (SqlCommand myCommand = new SqlCommand(query, myConn))
+                    {
+                        myReader = myCommand.ExecuteReader();
+                        table.Load(myReader);
+                        myReader.Close();
+                        myConn.Close();
+                    }
+                }
+
+                return new JsonResult(table);
+            }
+            catch (System.Exception e)
+            {
+                throw new Exception("HttpPost StoredProcAgendaServicoAcademia error: " + e.Message);
             }
         }
 
