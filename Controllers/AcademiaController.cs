@@ -189,12 +189,12 @@ namespace WebApi_iate_facil.Controllers
 
 
         [HttpGet]
-        public JsonResult StoredProcRecDadosCompAgenServAcademia(int seqAgendamento, int matricula, int categoria)
+        public JsonResult StoredProcRecDadosCompAgenServAcademia(int agendamento, int matricula, int categoria)
         {
             try
             {
-                //string query = @"EXEC exec SP_APP_REC_DADOS_COMP_AGEN_SERV_ACAD 123,123,123;";
-                string query = $"EXEC SP_APP_PESSOA_ACADEMIA {seqAgendamento}, {matricula}, {categoria}";
+                //string query = @"exec SP_APP_REC_DADOS_COMP_AGEN_SERV_ACAD 248605,9994,1;";
+                string query = $"EXEC SP_APP_REC_DADOS_COMP_AGEN_SERV_ACAD {agendamento}, {matricula}, {categoria}";
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
