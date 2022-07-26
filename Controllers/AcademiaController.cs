@@ -112,12 +112,13 @@ namespace WebApi_iate_facil.Controllers
         }
 
         [HttpGet]
-        public JsonResult StoredProcAgendaAcademiaMes(int mes, int ano, int seqServico, int? funcionario, string turno)
+        public JsonResult StoredProcAgendaAcademiaMes(int mes, int ano, int servico, int? funcionario, string turno)
         {
             try
             {
                 //string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_MES '07','2022','94','7003','D'";
-                string query = ($"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {seqServico}, '{funcionario}', '{turno}'")
+                //string query = $"EXEC SP_APP_AGENDA_ACADEMIA_MES '07','2022','101',null,null";
+                string query = ($"EXEC SP_APP_AGENDA_ACADEMIA_MES {mes}, {ano}, {servico}, '{funcionario}', '{turno}'")
                     .Replace("''", "null"); // Replace strings
                 /*
                    SqlCommand cmd = new SqlCommand("selecionaContatosPorIdade", conexao);
