@@ -82,12 +82,16 @@ namespace WebApi_iate_facil.Controllers
         }
 
         [HttpGet]
-        public JsonResult StoredProcAgendaAcademiaDia(string dataReferencia, int seqServico, int funcionario, string turno)
+        public JsonResult StoredProcAgendaAcademiaDia(string dataReferencia, int servico, int? funcionario, string turno)
         {
             try
             {
                 //string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_DIA '22-07-2022','94','7003','D'";
-                string query = $"SET DATEFORMAT DMY; EXEC SP_APP_AGENDA_ACADEMIA_DIA '{dataReferencia}', {seqServico}, {funcionario}, '{turno}'";
+                //EXEC SP_APP_AGENDA_ACADEMIA_DIA '20220728','101','4617','D'
+                //EXEC SP_APP_AGENDA_ACADEMIA_DIA '20220728','101',null,null
+                //EXEC SP_APP_AGENDA_ACADEMIA_DIA '2022-7-28','101',null,null
+                string query = ($"EXEC SP_APP_AGENDA_ACADEMIA_DIA '{dataReferencia}', {servico}, '{funcionario}', '{turno}'")
+                    .Replace("''", "null"); // Replace strings
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
@@ -295,9 +299,10 @@ namespace WebApi_iate_facil.Controllers
             try
             {
                 //string query = @"exec SP_APP_AGENDA_SERVICO_ACADEMIA 9994,123,123, '2022-7-1','2022-7-31', 12,123,12,12,'01000900';";
-                string query = $"EXEC SP_APP_AGENDA_SERVICO_ACADEMIA {entity.Matricula}, {entity.Categoria}, {entity.Dependente}, " +
-                    $"'{entity.DataInicio}', '{entity.DataFim}', {entity.Servico}, {entity.Funcionario}, {entity.Agenda}, " +
-                    $"{entity.Excecao}, '{entity.Usuario}'";
+                string query = ($"EXEC SP_APP_AGENDA_SERVICO_ACADEMIA '{entity.Matricula}', '{entity.Categoria}', '{entity.Dependente}', " +
+                    $"'{entity.DataInicio}', '{entity.DataFim}', '{entity.Servico}', '{entity.Funcionario}', '{entity.Agenda}', " +
+                    $"'{entity.Excecao}', '{entity.Usuario}'").Replace("''", "null"); // Replace strings
+                
                 DataTable table = new DataTable();
                 string sqlDataSource = _config.GetConnectionString("DefaultConnection");
 
