@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using WebApi_iate_facil.Models;
 
 namespace WebApi_iate_facil.Controllers
@@ -287,13 +288,13 @@ namespace WebApi_iate_facil.Controllers
 
         [HttpPost]
         
-        public JsonResult StoredProcAgendaServicoAcademia(EntityAgendaServicoAcademia entity)
+        public IActionResult  /*JsonResult*/ StoredProcAgendaServicoAcademia(EntityAgendaServicoAcademia entity)
         //public JsonResult StoredProcAgendaServicoAcademia(int matricula, int categoria, int dependente, 
         //    string dataInicio, string dataFim, int seqServico, int funcionario, int seqAgenda, int seqExcecao, string usuario)
         {
             try
             {
-                //string query = @"exec SP_APP_AGENDA_SERVICO_ACADEMIA 123,123,123, '2022-7-1','2022-7-31', 12,123,12,12,'01000900';";
+                //string query = @"exec SP_APP_AGENDA_SERVICO_ACADEMIA 9994,123,123, '2022-7-1','2022-7-31', 12,123,12,12,'01000900';";
                 string query = $"EXEC SP_APP_AGENDA_SERVICO_ACADEMIA {entity.Matricula}, {entity.Categoria}, {entity.Dependente}, " +
                     $"'{entity.DataInicio}', '{entity.DataFim}', {entity.Servico}, {entity.Funcionario}, {entity.Agenda}, " +
                     $"{entity.Excecao}, '{entity.Usuario}'";
@@ -312,8 +313,19 @@ namespace WebApi_iate_facil.Controllers
                         myConn.Close();
                     }
                 }
+                // Convert a DataTable to a string in C#
+                string res = string.Join(Environment.NewLine,
+                    table.Rows.OfType<DataRow>().Select(x => string.Join(" ; ", x.ItemArray)));
 
-                return new JsonResult(table);
+                string strError = "Sócio não matriculado na academia";
+                if (res.Contains(strError))
+                {
+                    return NotFound(new { Mensagem = $"ERRO: " + strError });
+                }
+                else
+                {
+                    return new JsonResult(table);
+                }
             }
             catch (System.Exception e)
             {
